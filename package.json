@@ -1,0 +1,15 @@
+{
+  "name": "narwhal",
+  "version": "1.0.0",
+  "description": "A discord bot that delivers important cryptocurrency movement news",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eduardo Olivares",
+  "license": "MIT",
+  "dependencies": {
+    "discord.js": "^12.5.1",
+    "dotenv": "^8.2.0"
+  }
+}
