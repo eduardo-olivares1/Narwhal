@@ -11,12 +11,4 @@ client.once('ready', () => {
     console.log('Narwhal is online!');
 });
 
-
-
-
-
-
-
-
-
 client.login(discordToken);
