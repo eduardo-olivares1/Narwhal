@@ -14,4 +14,9 @@ client.once('ready', () => {
 
 
 
+
+
+
+
+
 client.login(discordToken);
