@@ -85,8 +85,14 @@ To get a local copy up and running follow these simple example steps.
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-(Coming soon... :smile:)
+All commands begin with the "$" prefix. For example: 
 
+ ```sh
+  $somecommand arg1 arg2 ...arg
+  ```
+
+### Commands
+**$ping** - A simple ping command to check if services are online and responding properly
 
 
 <!-- ROADMAP -->
