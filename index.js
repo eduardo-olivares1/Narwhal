@@ -15,11 +15,13 @@ const prefix = "$";
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 
-//Create Initial JSON File
+//Create Initial Coin List
+let coinList = [];
 request('https://api.coingecko.com/api/v3/coins/list', { json: true },  function(err, res, body) {
-    fs.writeFileSync("coin-list.json", JSON.stringify(body));
+    coinList = body;
     });
-    
+
+//Import commands
 for(const file of commandFiles){
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
@@ -41,7 +43,7 @@ client.on('message', message =>{
     }
 });
 
-let coinList = require('./coin-list.json');
+const timeInterval = 60 * 60 * 1000;
 
 client.setInterval(() => {
     request('https://api.coingecko.com/api/v3/coins/list', { json: true },  function(err, res, body) {
@@ -65,12 +67,10 @@ client.setInterval(() => {
                     client.channels.cache.get('<CHANNEL ID>').send('New coin listed on CoinGecko: **' + apiCoinList[i].name + "** \nhttps://www.coingecko.com/en/search_redirect?id="+apiCoinList[i].id+"&type=coin");
                 }
             }
+            coinList = body;
+            return true;
         }
-
-        fs.writeFileSync("coin-list.json", JSON.stringify(body));
-        coinList = require('./coin-list.json');
-
     });
-},15000);
+},timeInterval);
 
 client.login(discordToken);
