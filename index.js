@@ -62,7 +62,7 @@ client.setInterval(() => {
             for (let i = 0; i < apiCoinList.length; i++){
                 let coinBool = containsCoin(localCoinList, apiCoinList[i]);
                 if (coinBool === false){
-                    client.channels.cache.get('<channel_id>').send('New coin listed on CoinGecko: ' + apiCoinList[i].name);
+                    client.channels.cache.get('<CHANNEL ID>').send('New coin listed on CoinGecko: **' + apiCoinList[i].name + "** \nhttps://www.coingecko.com/en/search_redirect?id="+apiCoinList[i].id+"&type=coin");
                 }
             }
         }
