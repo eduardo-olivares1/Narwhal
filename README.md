@@ -76,7 +76,10 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-(Coming soon... :smile:)
+A couple of things youll need before you can have Narwhal up and running:
+* [A Discord API access token & Application](https://discord.com/developers/docs)
+* [A Discord account & Discord Server you have administrative access to](https://discord.com/)
+* [A Twitter API access token](https://developer.twitter.com/en)
 
 ### Installation
 (Coming soon... :smile:)
