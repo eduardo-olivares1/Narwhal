@@ -2,6 +2,7 @@
 const dotEnv = require('dotenv').config();
 const Discord = require('discord.js');
 const fs = require('fs');
+const request = require('request');
 
 //Import environment variables 
 const discordToken = process.env.DISCORD_TOKEN;
@@ -14,6 +15,11 @@ const prefix = "$";
 client.commands = new Discord.Collection();
 const commandFiles = fs.readdirSync('./commands/').filter(file => file.endsWith('.js'));
 
+//Create Initial JSON File
+request('https://api.coingecko.com/api/v3/coins/list', { json: true },  function(err, res, body) {
+    fs.writeFileSync("coin-list.json", JSON.stringify(body));
+    });
+    
 for(const file of commandFiles){
     const command = require(`./commands/${file}`);
     client.commands.set(command.name, command);
@@ -34,5 +40,37 @@ client.on('message', message =>{
         client.commands.get('ping').execute(message, args);
     }
 });
+
+let coinList = require('./coin-list.json');
+
+client.setInterval(() => {
+    request('https://api.coingecko.com/api/v3/coins/list', { json: true },  function(err, res, body) {
+        console.log(body.length,coinList.length);
+        if (body.length != coinList.length){
+            const localCoinList = require('./coin-list.json');
+            const apiCoinList = body;
+
+            function containsCoin(objList, obj) {
+                for (let i = 0; i < objList.length; i++) {
+                    if (objList[i].id === obj.id) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+
+            for (let i = 0; i < apiCoinList.length; i++){
+                let coinBool = containsCoin(localCoinList, apiCoinList[i]);
+                if (coinBool === false){
+                    client.channels.cache.get('<channel_id>').send('New coin listed on CoinGecko: ' + apiCoinList[i].name);
+                }
+            }
+        }
+
+        fs.writeFileSync("coin-list.json", JSON.stringify(body));
+        coinList = require('./coin-list.json');
+
+    });
+},15000);
 
 client.login(discordToken);
