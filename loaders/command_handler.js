@@ -1,5 +1,4 @@
 const _ = require('lodash');
-const localCache = require('./local_cache');
 
 // TODO: at some point, it probably makes sense to move this to a seperate command and have that print out useable commands.
 // In the meantime, if a command cannot be found, use the Default Command.
@@ -8,13 +7,13 @@ const DEFAULT_COMMAND = {
 }
 
 class DiscordCommandHandler {
-    constructor(discordClient, prefix='$') {
+    constructor(discordClient, cache) {
         this._discordClient = discordClient;
         this._commandLookup = {}
-        this.cache = localCache.getInstance();
+        this._cache = cache;
     }
 
-    registerCommands(commands) {
+    register(commands) {
         for (const command of commands) {
             const name = command.name;
             if (name in this._commandLookup) {
@@ -35,11 +34,11 @@ class DiscordCommandHandler {
     }
 
     listen() {
-        this._discordClient.on('message',  this._processCommand.bind(this))
+        this._discordClient.on('message', this._processCommand.bind(this))
     }
 
     _processCommand(message) {
-        const registeredPrefix = this._getPrefix(message);
+        const registeredPrefix = this._getPrefix();
         if (!message.content.startsWith(registeredPrefix) || message.author.bot) return;
         const args = message.content.slice(registeredPrefix.length).split(/ +/);
         const command = args.shift();
@@ -47,11 +46,9 @@ class DiscordCommandHandler {
         commandObj.execute(message, args);
     }
 
-    _getPrefix(message) {
-        return this.cache.get('PREFIX', 'value') || '$';
+    _getPrefix() {
+        return this._cache.get('PREFIX', 'value') || '$';
     }
 }
 
-module.exports = {
-    DiscordCommandHandler: DiscordCommandHandler
-}
+module.exports = DiscordCommandHandler

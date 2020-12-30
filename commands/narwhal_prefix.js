@@ -1,6 +1,5 @@
 const localCache = require('../services/local_cache');
 const dotEnv = require('dotenv').config();
-const _ = require('lodash');
 
 const ALLOWED_ROLES = process.env.PREFIX_CHANGE_ROLES.split(',');
 const hasPermissions = (message) => {

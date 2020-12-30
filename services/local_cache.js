@@ -31,7 +31,8 @@ class LocalCache {
             'PREFIX': {
                 'value': '$'
             },
-            'BINDS': {} // @Eduardo, if you want to use this for binds, maybe you can put defaults in here.
+            'BINDS': {}, // @Eduardo, if you want to use this for binds, maybe you can put defaults in here.
+            'COINS': {}
         }
     }
 
@@ -44,9 +45,13 @@ class LocalCache {
     }
 
     get(collectionName, key) {
-        const collection = _.get(this.storage, collectionName);
+        const collection = this.getAll(collectionName);
         if (!collection) return undefined;
         return _.get(collection, key)
+    }
+
+    getAll(collectionName) {
+        return _.get(this.storage, collectionName, undefined);
     }
 }
 
