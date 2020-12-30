@@ -4,7 +4,7 @@
   "description": "A discord bot that delivers important cryptocurrency movement news",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1", 
+    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
   "author": "Eduardo Olivares",
@@ -12,6 +12,7 @@
   "dependencies": {
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
+    "lodash": "^4.17.20",
     "request": "^2.88.2"
   }
 }
