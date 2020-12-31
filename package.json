@@ -5,14 +5,19 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "node index.js",
+    "start-dev": "nodemon ./index.js"
   },
   "author": "Eduardo Olivares",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.21.1",
     "discord.js": "^12.5.1",
     "dotenv": "^8.2.0",
     "lodash": "^4.17.20",
     "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
   }
 }

@@ -1,6 +1,6 @@
-const ping = require('./ping');
 const commands = [
-    ping
+    require('./narwhal_prefix'),
+    require('./ping')
 ];
 
 module.exports = {

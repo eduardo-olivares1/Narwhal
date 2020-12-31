@@ -7,13 +7,13 @@ const DEFAULT_COMMAND = {
 }
 
 class DiscordCommandHandler {
-    constructor(discordClient, prefix='$') {
+    constructor(discordClient, cache) {
         this._discordClient = discordClient;
         this._commandLookup = {}
-        this.prefix = prefix;
+        this._cache = cache;
     }
 
-    registerCommands(commands) {
+    register(commands) {
         for (const command of commands) {
             const name = command.name;
             if (name in this._commandLookup) {
@@ -34,18 +34,21 @@ class DiscordCommandHandler {
     }
 
     listen() {
-        this._discordClient.on('message',  this._processCommand.bind(this))
+        this._discordClient.on('message', this._processCommand.bind(this))
     }
 
     _processCommand(message) {
-        if (!message.content.startsWith(this.prefix) || message.author.bot) return;
-        const args = message.content.slice(this.prefix.length).split(/ +/);
-        const command = args.shift().toLowerCase();
+        const registeredPrefix = this._getPrefix();
+        if (!message.content.startsWith(registeredPrefix) || message.author.bot) return;
+        const args = message.content.slice(registeredPrefix.length).split(/ +/);
+        const command = args.shift();
         const commandObj = this.getCommand(command);
         commandObj.execute(message, args);
     }
+
+    _getPrefix() {
+        return this._cache.get('PREFIX', 'value') || '$';
+    }
 }
 
-module.exports = {
-    DiscordCommandHandler: DiscordCommandHandler
-}
+module.exports = DiscordCommandHandler
