@@ -1,3 +1,4 @@
+const { asClass } = require('awilix');
 const _ = require('lodash');
 
 // TODO: at some point, it probably makes sense to move this to a seperate command and have that print out useable commands.
@@ -7,20 +8,22 @@ const DEFAULT_COMMAND = {
 }
 
 class DiscordCommandHandler {
-    constructor(discordClient, cache) {
-        this._discordClient = discordClient;
+    constructor({discordClient, prefixService}) {
+        this.discordClient = discordClient;
+        this.prefixService = prefixService;
         this._commandLookup = {}
-        this._cache = cache;
     }
 
-    register(commands) {
+    register(container, commands) {
         for (const command of commands) {
-            const name = command.name;
-            if (name in this._commandLookup) {
+            const commandNamespace = `command.${command.name}`
+            container.register(commandNamespace, asClass(command));
+            const cmd = container.resolve(commandNamespace)
+            if (cmd.name in this._commandLookup) {
                 // command name collision
-                console.log(`Command name collision. ${name} already exists, overwriting!`)
+                console.log(`Command name collision. ${cmd.name} already exists, overwriting!`)
             }
-            this._commandLookup[name] = command
+            this._commandLookup[cmd.name] = cmd;
         }
     }
 
@@ -34,20 +37,25 @@ class DiscordCommandHandler {
     }
 
     listen() {
-        this._discordClient.on('message', this._processCommand.bind(this))
+        this.discordClient.on('message', this._processCommand.bind(this))
     }
 
     _processCommand(message) {
-        const registeredPrefix = this._getPrefix();
+        const registeredPrefix = this.prefixService.get();
         if (!message.content.startsWith(registeredPrefix) || message.author.bot) return;
         const args = message.content.slice(registeredPrefix.length).split(/ +/);
         const command = args.shift();
         const commandObj = this.getCommand(command);
-        commandObj.execute(message, args);
-    }
-
-    _getPrefix() {
-        return this._cache.get('PREFIX', 'value') || '$';
+        try {
+            // The typing stuff seems to be buggy.
+            // message.channel.startTyping();
+            commandObj.execute(message, args);
+        } catch(err) {
+            console.log(`Message: ${message.content} errored with:`);
+            console.log(err);
+        } finally {
+            // message.channel.stopTyping()
+        }
     }
 }
 

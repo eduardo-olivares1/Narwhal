@@ -1,4 +1,3 @@
-const localCache = require('../services/local_cache');
 const dotEnv = require('dotenv').config();
 
 const ALLOWED_ROLES = process.env.PREFIX_CHANGE_ROLES.split(',');
@@ -6,13 +5,18 @@ const hasPermissions = (message) => {
     return message.member.roles.cache.some((role) => ALLOWED_ROLES.includes(role.name));
 }
 
-module.exports = {
-    name: 'bind',
-    description: "Allows a user to change the discord text channel that Narwhal is bound to",
-    execute(message, args){
-        const cache = localCache.getInstance();
-        const prefix = cache.get('PREFIX', 'value');
-        const currentBind = cache.get('BIND', 'value');
+class Bind {
+    name = 'bind';
+    description = "Allows a user to change the discord text channel that Narwhal is bound to";
+
+    constructor({prefixService, bindService}) {
+        this.prefixService = prefixService;
+        this.bindService = bindService;
+    }
+
+    async execute(message, args) {
+        const prefix = this.prefixService.get();
+        const currentBind = this.bindService.get();
         const regex = RegExp('<#[0-9]{18}>','gi');
 
         if (args.length < 1) {
@@ -41,10 +45,11 @@ module.exports = {
                 message.channel.send(`${newChannel} is not something Narwhal can bind to :P . Try binding Narwhal to a channel by using the "#" channel prefix!`);
                 return;
             }
-            cache.put('BIND', 'value', newChannel); 
+            // the value comes in as '<#CHANNELID>'
+            // so removing the first two, and last characters before storing.
+            this.bindService.put(newChannel.slice(2, -1));
             message.channel.send(`Narwhal is now bound to ${newChannel}`);
             return;
-
         }
 
         if (args.length > 1){
@@ -54,3 +59,5 @@ module.exports = {
 
     }
 }
+
+module.exports = Bind
