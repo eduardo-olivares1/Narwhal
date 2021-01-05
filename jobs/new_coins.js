@@ -19,11 +19,13 @@ class NewCoinsJob {
     async run() {
         const resp = await axios.get(URL);
         const prevCoins = this.cache.getAll('COINS');
+        const boundChannel = this.cache.get('BIND', 'value');
         if (_.keys(prevCoins).length === resp.data.length) return;
+        if (boundChannel === '') return;
         const newCoins = _.filter(resp.data, (coin) => !(coin.id in prevCoins));
         _.forEach(newCoins, (coin) => {
             this.cache.put('COINS', coin.id, coin);
-            this.discordClient.channels.cache.get('<CHANNEL_ID>').send(
+            this.discordClient.channels.cache.get(boundChannel).send(
                 'New coin listed on CoinGecko: **' + coin.name + "** \nhttps://www.coingecko.com/en/search_redirect?id="+coin.id+"&type=coin");
         });
     }
