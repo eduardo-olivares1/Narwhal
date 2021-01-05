@@ -31,7 +31,9 @@ class LocalCache {
             'PREFIX': {
                 'value': '$'
             },
-            'BINDS': {}, // @Eduardo, if you want to use this for binds, maybe you can put defaults in here.
+            'BIND': {
+                'value': ''
+            },
             'COINS': {}
         }
     }
