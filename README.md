@@ -88,14 +88,36 @@ A couple of things youll need before you can have Narwhal up and running:
 
 <!-- USAGE EXAMPLES -->
 ## Usage
-All commands begin with the "$" prefix. For example: 
+All commands begin with the default "$" prefix, however this can be changed. For example: 
 
  ```sh
   $somecommand arg1 arg2 ...arg
   ```
 
 ### Commands
-**$ping** - A simple ping command to check if services are online and responding properly
+Command documentation is as follows: 
+
+**$somecommand** - A very cool description.
+
+* arg1 - arg1 description
+* arg2 - arg2 description
+* arg3 - arg3 description
+
+
+Commands:
+
+**$ping** - A simple ping command to check if services are online and responding properly.
+
+* coingecko - Checks to see if CoinGecko API services are online.
+
+**$bind** - Allows a user to change the discord text channel that Narwhal is bound to.
+
+* check - Checks to see if bot is bound to a channel.
+* #[channel] - Binds the bot to channel mentioned.
+
+**$narwhalPrefix** - Allows a user to change the prefix for Narwhal. Default is `$`.
+
+* [new_prefix] - Adds [new_prefix] as the new prefix.
 
 
 <!-- ROADMAP -->
