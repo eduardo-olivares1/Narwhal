@@ -1,8 +1,7 @@
 const { asClass } = require('awilix');
 
 const services = {
-    //discordClient is also available, but it's added to the container in loaders/index.js
-    // discordClient: awilix.asValue(discordClient),
+    discordClient: asClass(require('./discord_client.service')).singleton(),
     bindService: asClass(require('./bind.service')).singleton(),
     localCache: asClass(require('./local_cache')).singleton(),
     prefixService: asClass(require('./prefix.service')).singleton(),
