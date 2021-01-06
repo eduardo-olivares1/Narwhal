@@ -37,7 +37,7 @@ class DiscordCommandHandler {
     }
 
     listen() {
-        this.discordClient.on('message', this._processCommand.bind(this))
+        this.discordClient.onMessage(this._processCommand.bind(this));
     }
 
     _processCommand(message) {

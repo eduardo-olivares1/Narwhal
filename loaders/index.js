@@ -19,7 +19,7 @@ const load = (discordClient) => {
 
         //Register top level modules
         container.register({
-            discordClient: awilix.asValue(discordClient),
+            _rawDiscordClient: awilix.asValue(discordClient),
             _jobHandler: awilix.asClass(JobHandler).singleton(),
             _commandHandler: awilix.asClass(CommandHandler).singleton()
         })
