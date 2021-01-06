@@ -6,27 +6,19 @@
 // TODO: This probably becomes an issue later on when namespace collisions start happening, at which point this probably cant be used anyway
 // but until we need to scale to a database, we can use this as a way to hold state.
 //
-// LocalCache is a singleton object which should only be instantiated with the getInstance method
+// LocalCache is provided via Dependency Injection.
+// If a new job or command is being created and the cache is needed,
+// create a service for it, and inject the service into the job/command,
+// jobs
 //
 // Usage:
-// const localCache = require(<this file path>);
-// const cache = localCache.getInstance()
 // cache.put('PREFIX', value, newPrefix)
 // cache.get('PREFIX', value)
 
 const _ = require('lodash');
 
-const getInstance = () => {
-    return new LocalCache();
-}
-
 class LocalCache {
-    static _instance = null;
     constructor() {
-        if(LocalCache._instance) {
-            return LocalCache._instance;
-        }
-        LocalCache._instance = this;
         this.storage = {
             'PREFIX': {
                 'value': '$'
@@ -57,6 +49,4 @@ class LocalCache {
     }
 }
 
-module.exports = {
-    getInstance: getInstance
-}
+module.exports = LocalCache

@@ -1,33 +1,29 @@
-const axios = require('axios');
 const _ = require('lodash');
-const URL = 'https://api.coingecko.com/api/v3/coins/list';
 
 class NewCoinsJob {
     jobType = 'TimeInterval';
     timeInterval = 10000;
 
-    constructor(discordClient, cache) {
+    constructor({discordClient, coinsService, bindService}) {
         this.discordClient = discordClient;
-        this.cache = cache;
+        this.coinsService = coinsService;
+        this.bindService = bindService;
     }
 
-    async init() {
-        const resp = await axios.get(URL);
-        _.forEach(resp.data, (coin) => this.cache.put('COINS', coin.id, coin));
-    }
+    async init(){}
     
     async run() {
-        const resp = await axios.get(URL);
-        const prevCoins = this.cache.getAll('COINS');
-        const boundChannel = this.cache.get('BIND', 'value');
-        if (_.keys(prevCoins).length === resp.data.length) return;
-        if (boundChannel === '') return;
-        const newCoins = _.filter(resp.data, (coin) => !(coin.id in prevCoins));
+        const boundChannel = this.bindService.get();
+        if (!boundChannel) {
+            console.log('No channel was bound, early out of NewCoinsJob.');
+            return;
+        }
+        const newCoins = await this.coinsService.fetchNewCoins();        
         _.forEach(newCoins, (coin) => {
-            this.cache.put('COINS', coin.id, coin);
             this.discordClient.channels.cache.get(boundChannel).send(
                 'New coin listed on CoinGecko: **' + coin.name + "** \nhttps://www.coingecko.com/en/search_redirect?id="+coin.id+"&type=coin");
         });
+        this.coinsService.store(newCoins);
     }
 }
 

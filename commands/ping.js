@@ -1,16 +1,25 @@
 const _ = require('lodash');
-const request = require('request');
+const CoinGecko = require('coingecko-api');
 
-module.exports = {
-    name: 'ping',
-    description: "A simple ping command to check if API services are active",
-    execute(message, args){ 
+class Ping {
+    name = 'ping';
+    description = "A simple ping command to check if API services are active";
+
+    constructor() { 
+        this.coinGeckoClient = new CoinGecko(); 
+    }
+    
+    async execute(message, args) { 
         if (_.isEmpty(args)) return;
         if (args[0].toLowerCase() === "coingecko"){
-            request('https://api.coingecko.com/api/v3/ping', { json: true },  function(err, res, body) {
-                message.channel.send("CoinGecko says: " + body['gecko_says']);
-            });
-            return;
+            const resp = await this.coinGeckoClient.ping();
+            if (200 <= resp.code && resp.code <= 299){
+                message.channel.send("CoinGecko says: " + resp.data['gecko_says']);
+            } else {
+                message.channel.send("CoinGecko says: request failed")
+            }
         }
     }
 }
+
+module.exports = Ping
