@@ -1,4 +1,4 @@
-const dotEnv = require('dotenv').config();
+require('dotenv').config();
 const Discord = require('discord.js');
 const loader = require('./loaders/index');
 
