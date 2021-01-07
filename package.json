@@ -4,7 +4,7 @@
   "description": "A discord bot that delivers important cryptocurrency movement news",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "node index.js",
     "start-dev": "nodemon ./index.js"
   },
@@ -20,6 +20,7 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
+    "jest": "^26.6.3",
     "nodemon": "^2.0.6"
   }
 }
